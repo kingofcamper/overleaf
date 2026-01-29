@@ -10,8 +10,9 @@ services:
                 condition: service_healthy
             redis:
                 condition: service_started
-        ports:
-            - 8080:80
+        # No need for port mapping, Coolify handle this internally
+        # ports:
+        #     - 8080:80
         stop_grace_period: 60s
         volumes:
             - ~/sharelatex_data:/var/lib/overleaf

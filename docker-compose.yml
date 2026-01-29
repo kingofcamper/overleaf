@@ -21,8 +21,7 @@ services:
             ########################################################################
             # - /var/run/docker.sock:/var/run/docker.sock
         environment:
-
-            OVERLEAF_APP_NAME: Overleaf Community Edition
+            OVERLEAF_APP_NAME: Overleaf
 
             OVERLEAF_MONGO_URL: mongodb://mongo/sharelatex
 
@@ -31,18 +30,18 @@ services:
             OVERLEAF_REDIS_HOST: redis
             REDIS_HOST: redis
 
-            ENABLED_LINKED_FILE_TYPES: 'project_file,project_output_file'
+            ENABLED_LINKED_FILE_TYPES: "project_file,project_output_file"
 
             # Enables Thumbnail generation using ImageMagick
-            ENABLE_CONVERSIONS: 'true'
+            ENABLE_CONVERSIONS: "false"
 
             # Disables email confirmation requirement
-            EMAIL_CONFIRMATION_DISABLED: 'true'
+            # EMAIL_CONFIRMATION_DISABLED: 'true'
 
             ## Set for SSL via nginx-proxy
             #VIRTUAL_HOST: 103.112.212.22
 
-            # OVERLEAF_SITE_URL: http://overleaf.example.com
+            OVERLEAF_SITE_URL: https://latex.bilel-belghith.tn
             # OVERLEAF_NAV_TITLE: Overleaf Community Edition
             # OVERLEAF_HEADER_IMAGE_URL: http://example.com/mylogo.png
             # OVERLEAF_ADMIN_EMAIL: support@it.com
@@ -77,14 +76,14 @@ services:
             ## so the following environment variables must be commented out to avoid compile issues.
             ##
             ## Sandboxed Compiles: https://docs.overleaf.com/on-premises/configuration/overleaf-toolkit/server-pro-only-configuration/sandboxed-compiles
-            SANDBOXED_COMPILES: 'true'
+            # SANDBOXED_COMPILES: 'true'
             ### Bind-mount source for /var/lib/overleaf/data/compiles inside the container.
-            SANDBOXED_COMPILES_HOST_DIR_COMPILES: '/home/user/sharelatex_data/data/compiles'
+            # SANDBOXED_COMPILES_HOST_DIR_COMPILES: '/home/user/sharelatex_data/data/compiles'
             ### Bind-mount source for /var/lib/overleaf/data/output inside the container.
-            SANDBOXED_COMPILES_HOST_DIR_OUTPUT: '/home/user/sharelatex_data/data/output'
+            # SANDBOXED_COMPILES_HOST_DIR_OUTPUT: '/home/user/sharelatex_data/data/output'
             ### Backwards compatibility (before Server Pro 5.5)
-            DOCKER_RUNNER: 'true'
-            SANDBOXED_COMPILES_SIBLING_CONTAINERS: 'true'
+            # DOCKER_RUNNER: 'true'
+            # SANDBOXED_COMPILES_SIBLING_CONTAINERS: 'true'
 
             ## Works with test LDAP server shown at bottom of docker compose
             # OVERLEAF_LDAP_URL: 'ldap://ldap:389'
@@ -100,23 +99,22 @@ services:
             # OVERLEAF_TEMPLATES_USER_ID: "578773160210479700917ee5"
             # OVERLEAF_NEW_PROJECT_TEMPLATE_LINKS: '[ {"name":"All Templates","url":"/templates/all"}]'
 
-
             # OVERLEAF_PROXY_LEARN: "true"
 
     mongo:
         restart: always
         image: mongo:6.0
         container_name: mongo
-        command: '--replSet overleaf'
+        command: "--replSet overleaf"
         volumes:
             - ~/mongo_data:/data/db
             - ./bin/shared/mongodb-init-replica-set.js:/docker-entrypoint-initdb.d/mongodb-init-replica-set.js
         environment:
-          MONGO_INITDB_DATABASE: sharelatex
+            MONGO_INITDB_DATABASE: sharelatex
         extra_hosts:
-          # Required when using the automatic database setup for initializing the replica set.
-          # This override is not needed when running the setup after starting up mongo.
-          - mongo:127.0.0.1
+            # Required when using the automatic database setup for initializing the replica set.
+            # This override is not needed when running the setup after starting up mongo.
+            - mongo:127.0.0.1
         healthcheck:
             test: echo 'db.stats().ok' | mongosh localhost:27017/test --quiet
             interval: 10s
